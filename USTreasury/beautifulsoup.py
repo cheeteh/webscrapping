@@ -49,8 +49,8 @@ html = urlopen(request).read()
 
 soup = bs.BeautifulSoup(html,'html5lib') 
 table_data = soup.find_all('table', class_='t-chart')
-print(table_data.contents[0])
-# print(len(list(table_data)))
+print(table_data)
+print(len(list(table_data)))
 
 
 # print(soup.encode("utf-8"))
