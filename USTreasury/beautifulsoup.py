@@ -49,20 +49,21 @@ html = urlopen(request).read()
 
 soup = bs.BeautifulSoup(html,'html5lib') 
 table_data = soup.find_all('table', class_='t-chart')
-print(table_data)
-print(len(list(table_data)))
+# print(table_data[0])
+
+tr_data = table_data[0].find_all('tr', {'class':['oddrow','evenrow']})
+# print(tr_data[0])
+
+td_data = tr_data[0].find_all('td')
+
+for i in td_data:
+    print(i.text)
 
 
+print("Printing TD data by index: {}".format(td_data[2].text))
+
+#print(len(list(table_data)))
 # print(soup.encode("utf-8"))
-
-
-
-
-
-
-
-    
-
 
 # table_tag = beautifulSoupObject.find_all(["h2","hr"])
 # print(table_tag)
