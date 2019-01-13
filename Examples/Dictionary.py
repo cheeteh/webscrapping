@@ -1,42 +1,60 @@
 #defining dictionary
-import matplotlib as plt
+import matplotlib.pyplot as plt
+from test.test_asyncore import bind_af_aware
 
 
-my_dict = {'2019-01-01':{'1 MO':2.40,
-                         '2 MO':2.40,
-                         '3 MO':2.42,
-                         '6 MO':2.51,
-                         '1 YR':2.60,
-                         '2 YR':2.50,
-                         '3 YR':2.47,
-                         '5 YR':2.49,
-                         '7 YR':2.56,
-                         '10 YR':2.66,
-                         '20 YR':2.83,
-                         '30 YR':2.97
-                        },
-            '2019-01-02':{'1 MO':2.42,
-                         '2 MO':2.42,
-                         '3 MO':2.41,
-                         '6 MO':2.47,
-                         '1 YR':2.50,
-                         '2 YR':2.39,
-                         '3 YR':2.35,
-                         '5 YR':2.37,
-                         '7 YR':2.44,
-                         '10 YR':2.56,
-                         '20 YR':2.75,
-                         '30 YR':2.92
-                        },            
-                        
+my_dict = {'1MO': { '2019-01-01':2.4, 
+                    '2019-01-02':2.5,
+                    '2019-01-03':2.7,
+                    '2019-01-04':2.1
+                   },
+           '2MO': { '2019-01-01':3.4,
+                    '2019-01-02':3.5,
+                    '2019-01-03':3.7,
+                    '2019-01-04':3.1
+                   }       
           }
 
+bond_time_list=[]
+for i in my_dict:
+    bond_time_list.append(i)
+    
 
+dates_per_bond_time_list=[]
+interest_per_bond_time_list=[]
 
-# for x in my_dict:
-#     print(my_dict[x])
+for bond_time,data_per_bond_time_dict in my_dict.items():
+    
+    #initiated two separate list for getting the nested dict data in form of a list
+    dates_list=[]
+    interest_value_list=[]
+    for dates,interest_value in data_per_bond_time_dict.items():
+        dates_list.append(dates)
+        interest_value_list.append(interest_value)
+    
+    #adding the two list created per key of the nested dict to separate list for plot    
+    dates_per_bond_time_list.append(dates_list)
+    interest_per_bond_time_list.append(interest_value_list)
+    
+    
+print(dates_per_bond_time_list)
+print(interest_per_bond_time_list)   
+
+    
+plt.plot(dates_per_bond_time_list[0],interest_per_bond_time_list[0], label ="1 MO")    
+plt.plot(dates_per_bond_time_list[1],interest_per_bond_time_list[1], label ="2 MO")
+plt.xlabel("Dates")
+plt.ylabel("Interest Rates")
+plt.legend()
+plt.show() 
 
 # -- Prints each Value 
 # print(my_dict.values())
 
-# -- Prints
+# -- Prints just keys
+# print(my_dict.keys())
+
+# -- Iterate through each item
+# for bond_time,data_per_bond_time_dict in my_dict.items()
+#     print(bond_time,data_per_bond_time_dict) 
+

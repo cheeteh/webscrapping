@@ -6,6 +6,7 @@ import urllib.parse
 import pandas as pd
 import re
 
+
 '''
 sauce = urllib.request.urlopen("https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=yieldYear&year=2018").read()
 soup = bs.BeautifulSoup(sauce,'html5lib')
@@ -60,7 +61,7 @@ for i in td_data:
     print(i.text)
 
 
-print("Printing TD data by index: {}".format(td_data[2].text))
+# print("Printing TD data by index: {}".format(td_data[2].text))
 
 #print(len(list(table_data)))
 # print(soup.encode("utf-8"))
