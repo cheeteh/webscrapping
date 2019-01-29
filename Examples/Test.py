@@ -1,23 +1,23 @@
-import matplotlib.pyplot as plt
+import requests
+from bs4 import BeautifulSoup
+import time
+import pandas as pd
+import sys
 
-x="1 MO"
+def run():
+    r = requests.get('https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx/?data=yieldYear&year=2018')
+    soup = BeautifulSoup(r.content,'html5lib')
+    #
+    tbl = soup.find_all('table')[1]
+#     print(tbl)
+    df = pd.read_html(str(tbl))
+    print(df)
+    #
+#     df.columns = df.loc[0]
+#     print(df.loc[0])
+    #
+#     cities = df['City'].tolist()
+#     print(cities)
 
-print_x = "Parameter_"+x
-
-print(print_x)
-
-# plt.plot(x[0])
-# 
-# 
-# 
-# # data = {'title1': {10:20, 4:10}, 'title2':{8:10, 9:20, 10:30}}
-# # 
-# # 
-# # for title, data_dict in data.items():
-# #     x = data_dict.keys()
-# #     y = data_dict.values()
-# #     plt.figure()
-# #     plt.plot(x,y)
-# #     plt.title(title)
-# 
-# plt.show()
+if __name__ == "__main__":
+    run()

@@ -4,7 +4,6 @@ import bs4 as bs
 import requests
 import pandas as pd
 import re
-import matplotlib.pyplot as plt
 
 #first get the URL & get a response from the site
 url='https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx/?data=yieldYear&year=2018'
@@ -20,13 +19,7 @@ table_data = soup.find_all('table')[1]
 #create data-frame from that html piece for table above
 df = pd.read_html(str(table_data))[0]
 df.columns=df.loc[0]
-print(df.columns)
 
-df_desired=df.iloc[1:len(df),1:12].astype(float)
-df_desired.columns=df.columns[1:12]
-print(df_desired)
- 
-df.plot()
-plt.show()
+
 
 
