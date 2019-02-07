@@ -1,102 +1,41 @@
 # @author: Prashant.Pal
-
-import bs4 as bs
-from urllib.request import Request, urlopen
-import urllib.parse
+from bs4 import BeautifulSoup
+import requests
 import pandas as pd
 import re
+import matplotlib.pyplot as plt
 
-'''
-sauce = urllib.request.urlopen("https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=yieldYear&year=2018").read()
-soup = bs.BeautifulSoup(sauce,'html5lib')
 
-tables = soup.find('table', attrs={'class':'t-chart'})
-tbody = tables.find('tbody')
-table_rows = tbody.find_all('tr')
+url_2018='https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx/?data=yieldYear&year=2018'
+url_2019='https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx/?data=yieldYear&year=2019'
 
-sample_dict = {}
-sample_dict['date']=['1MO','2MO','6MO','1YR','2YR','3YR','5YR','7YR','10YR','20YR','30YR']
-final_dict = {}
-
-for tr in table_rows[1:] :
-#     
-    td_data = tr.find_all('td')
-#     print(td_data)
-    row = [i.text for i in td_data]
-    interest_rate_list = row[1:]
-#    print(interest_rate_list)
-    sample_dict[row[0]]=interest_rate_list
-   
-
-print(sample_dict)
-'''
-
-# https://www.google.com/search?q=test&ie=&oe=
-
-url='https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx/?data=yieldYear&year=2018'
-# url="file:///C:/Work/Projects/Python/eclipse-workspace/MATPLOT_LEARNING/Examples/basic_table.html"
-# For https links you cannot use data
-# values = {"data":"yieldYear","year":"2018"}
-# data = urllib.parse.urlencode(values)
-# data = data.encode('utf-8')
-
+  
 user_agent = 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:48.0) Gecko/20100101 Firefox/48.0'
 headers = {'User-Agent': user_agent}
-request = Request(url,headers=headers)
-html = urlopen(request).read()
-# print(str(html))
+response_2018_html = requests.get(url_2018,headers=headers).text
+response_2019_html = requests.get(url_2019,headers=headers).text
 
+soup_2018=BeautifulSoup(response_2018_html,'lxml')
+soup_2019=BeautifulSoup(response_2019_html,'lxml')
 
-soup = bs.BeautifulSoup(html,'html5lib') 
-table_data = soup.find_all('table', class_='t-chart')
-print(table_data)
-print(len(list(table_data)))
+table_data_2018 = soup_2018.find_all('table')[1]
+table_data_2019 = soup_2019.find_all('table')[1]
+# print(table_data_2019.prettify())
 
+df_2018=pd.read_html(str(table_data_2018))[0]
+df_2019=pd.read_html(str(table_data_2019))[0]
 
-# print(soup.encode("utf-8"))
+df_final=df_2018.append(df_2019.iloc[1:],ignore_index=True)
 
+df_final.columns=df_final.iloc[0]
+df_final = df_final.iloc[1:]
+df_final.index = pd.to_datetime(df_final.iloc[0:,0])
+print(df_final)
 
-
-
-
-
-
-    
-
-
-# table_tag = beautifulSoupObject.find_all(["h2","hr"])
-# print(table_tag)
-
-# for tag in beautifulSoupObject.find_all(True):
-#     print(tag.name)
-# for tag in beautifulSoupObject.find_all(re.compile("^h")):
-#     print(tag.name)
-
-    
-# beautifulSoupObject.find_all()
-
-
-
-# rowlist = re.findall(r'<tbody>(.*?)</tbody>', str(html))
-# print(rowlist)
-
-
-# try:
-# 
-#     user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
-#     headers = {'User-Agent': user_agent}
-#     request = Request(url, headers=headers)
-#     htmlstring = urlopen(request).read()
-#     print(htmlstring)
-# 
-# #     first_tr=re.findall('r<tbody>.*?</tbody>', str(htmlstring))
-# #     print(first_tr)
-# #     
-# except Exception as e:
-#     
-#     print(str(e))    
-
-
-
-#df = pd.DataFrame(sample_list)
-#print(df.head())
+df_final['30 yr'].astype(float).plot(kind='line',legend=True)
+df_final['10 yr'].astype(float).plot(kind='line',legend=True)
+df_final['5 yr'].astype(float).plot(kind='line',legend=True)
+df_final['1 mo'].astype(float).plot(kind='line',legend=True)
+df_final['6 mo'].astype(float).plot(kind='line',legend=True)
+ 
+plt.show()
